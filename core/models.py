@@ -1,4 +1,5 @@
 from django.db import models
+from datetime import datetime
 
 
 # Create your models here.
@@ -32,3 +33,9 @@ class Person(models.Model):
     class Meta:
         db_table = 'person'
         managed = True
+
+    @property
+    def age(self):
+        _now = datetime.now().date()
+        diff = _now - self.date_birth
+        return int(diff.days / 365)
