@@ -1,6 +1,10 @@
 from datetime import date
 
 
+def print_hello_world():
+    return 'hello world'
+
+
 # método que transforma uma string para uma data
 def transform_date(input_date: str):
     # 1 - split data string '1987-10-28' isso vira um array de string ['1987', '10', '28']
