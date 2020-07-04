@@ -31,7 +31,7 @@ class Menu:
         self.models = models
 
     # método para adicionar uma pessoa no banco de dados
-    def add(self):
+    def add_person(self):
         # instância para uma nova pessoa
         person = self.models.Person()
         # atribui o que o usuário digitou no nome da pessoa
@@ -42,20 +42,45 @@ class Menu:
         person.salary = float(input('Salary: '))
         # atribui o que o usuário digitou na data de nascimento da pessoa e faz a conversão de string para data
         person.date_birth = helpers.transform_date(input('Date birth (YYYY-MM-DD): '))
+
+        print('Agora você precisa informar o cargo. Veja abaixo na listagem qual o cargo desejado.')
+        self.list_rule()
+        rule_code = int(input('Digite o código do cargo: '))
+        person.rule = self.obtains_rule(rule_code)
         # salva o objeto no banco de dados
         person.save()
 
-    def list(self):
+    def obtains_rule(self, rule_code):
+        try:
+            return self.models.Rule.objects.get(pk=rule_code)
+        except self.models.Rule.DoesNotExist:
+            print('Código do cargo inválido')
+
+    def list_person(self):
         # lista todos as pessoas (select * from person) usando o mecanismo do django
         # realiza um foreach nos itens que retornaram do banco de dados
         for person in self.models.Person.objects.all():
             # imprime a pessoa corrente
             print(
-                ' Name: ', person.name, '\n',
-                'Gender: ', person.gender, '\n',
-                'Salary: ', person.salary, '\n',
-                'Date birth: ', person.date_birth, '\n',
-                'Age: ', person.age, '\n\n'
+                ' Id: ', person.id,
+                ', Name: ', person.name,
+                ', Gender: ', person.gender,
+                ', Salary: ', person.salary,
+                ', Date birth: ', person.date_birth,
+                ', Age: ', person.age,
+                ', Rule: ', person.rule.name if person.rule is not None else '-', '\n'
+            )
+
+    def add_rule(self):
+        rule = self.models.Rule()
+        rule.name = input('Name: ')
+        rule.save()
+
+    def list_rule(self):
+        for rule in self.models.Rule.objects.all():
+            print(
+                ' Id: ', rule.id,
+                ', Name: ', rule.name
             )
 
     def sum_salary(self):
@@ -81,11 +106,15 @@ class Menu:
             print('\n')
 
             if self.option == 1:
-                self.add()
+                self.add_person()
             elif self.option == 2:
-                self.list()
+                self.list_person()
             elif self.option == 3:
                 self.sum_salary()
+            elif self.option == 4:
+                self.add_rule()
+            elif self.option == 5:
+                self.list_rule()
             else:
                 if not self.option == 0:
                     print('Invalid option')

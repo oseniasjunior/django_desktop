@@ -30,6 +30,12 @@ class Person(models.Model):
         db_column='dt_birth',
         null=False
     )
+    rule = models.ForeignKey(
+        to='Rule',
+        on_delete=models.DO_NOTHING,
+        db_column='id_rule',
+        null=True
+    )
 
     class Meta:
         # define o nome da tabela no banco de dados
@@ -45,3 +51,16 @@ class Person(models.Model):
         diff = _now - self.date_birth
         # pega a diferença de dias na subtração e divide por 365 para chegar na idade da pessoa
         return int(diff.days / 365)
+
+
+class Rule(models.Model):
+    id = models.AutoField(
+        db_column='id',  # definie o nome da coluna no banco de dados
+        null=False,  # define se a coluna é ou não obrigatória no banco de dados
+        primary_key=True  # define que a coluna é pk da tabela
+    )
+    name = models.CharField(
+        db_column='tx_name',
+        null=False,
+        max_length=50
+    )
